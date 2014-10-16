@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Mapas Base</title>
+
+	<link rel="stylesheet" href="http://js.arcgis.com/3.11/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="http://js.arcgis.com/3.11/esri/css/esri.css">
+
+	<style>
+	html,body {
+		height: 100%;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+	}
+	.map
+	{
+		float:left;
+		width: 33%;
+		height: 50%;
+		border: 1px solid gray;
+		box-sizing: border-box;
+	}
+	#map3, #map6
+	{
+		width: 34%;
+	}
+	</style>
+
+</head>
+<body>
+	<div class="map" id="map1"></div>
+	<div class="map" id="map2"></div>
+	<div class="map" id="map3"></div>
+	<div class="map" id="map4"></div>
+	<div class="map" id="map5"></div>
+	<div class="map" id="map6"></div>
+
+    <script src="http://js.arcgis.com/3.11/"></script>
+	<script>
+	require(["esri/map", "esri/geometry/webMercatorUtils", "dojo/domReady!"], function(Map, webMercatorUtils) {
+		var maps = [];
+        maps.push( new Map("map1", {
+          basemap: "topo",
+          center: [-122.45, 37.75], // longitude, latitude
+          zoom: 13,
+          slider: false
+        }));
+        maps.push( new Map("map2", {
+          basemap: "streets",
+          center: [-122.45, 37.75], // longitude, latitude
+          zoom: 13,
+          slider: false
+        }));
+        maps.push( new Map("map3", {
+          basemap: "satellite",
+          center: [-122.45, 37.75], // longitude, latitude
+          zoom: 13,
+          slider: false
+        }));
+        maps.push( new Map("map4", {
+          basemap: "oceans",
+          center: [-122.45, 37.75], // longitude, latitude
+          zoom: 13,
+          slider: false
+        }));
+        maps.push( new Map("map5", {
+          basemap: "gray",
+          center: [-122.45, 37.75], // longitude, latitude
+          zoom: 13,
+          slider: false
+        }));
+        maps.push( new Map("map6", {
+          basemap: "national-geographic",
+          center: [-122.45, 37.75], // longitude, latitude
+          zoom: 13,
+          slider: false
+        }));
+
+        maps.forEach(function(map)
+        {
+        	map.on('extent-change', function(evt)
+        	{
+        		//console.log(evt);
+        		var mapId = evt.target.container.id;
+        		var center = webMercatorUtils.webMercatorToGeographic(evt.target.extent.getCenter());
+        		var level = evt.target.getLevel();
+        		var options = {
+        			center: [ center.x, center.y ],
+        			zoom: level
+        		}
+        		console.log(mapId, JSON.stringify(options,null,4));
+        	});
+        });
+    });	
+	</script>
+</body>
+</html>	
