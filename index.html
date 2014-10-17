@@ -39,6 +39,8 @@
 
     <script src="http://js.arcgis.com/3.11/"></script>
 	<script>
+  var print = undefined;
+
 	require(["esri/map", "esri/geometry/webMercatorUtils", "dojo/domReady!"], function(Map, webMercatorUtils) {
 		var maps = [];
         maps.push( new Map("map1", {
@@ -78,21 +80,35 @@
           slider: false
         }));
 
-        maps.forEach(function(map)
+        print = function()
         {
-        	map.on('extent-change', function(evt)
-        	{
-        		//console.log(evt);
-        		var mapId = evt.target.container.id;
-        		var center = webMercatorUtils.webMercatorToGeographic(evt.target.extent.getCenter());
-        		var level = evt.target.getLevel();
-        		var options = {
-        			center: [ center.x, center.y ],
-        			zoom: level
-        		}
-        		console.log(mapId, JSON.stringify(options,null,4));
-        	});
-        });
+          var coords = [];
+          maps.forEach(function(map)
+          {
+              //console.log(evt);
+              var mapId = map.container.id;
+              var center = webMercatorUtils.webMercatorToGeographic(map.extent.getCenter());
+              var level = map.getLevel();
+              var options = {
+                center: [ center.x, center.y ],
+                zoom: level
+              }
+              //console.log(mapId, JSON.stringify(options,null,4));
+              coords.push( mapId + " " + JSON.stringify(options,null,4));
+          });
+          window.prompt("Pulsa Ctrl+C para copiar", coords.join("\n"));
+          return "ok!";
+        };
+
+        maps.forEach(function(m)
+        {
+          m.on('key-down', function(evt)
+          {
+            var key = evt.keyCode || evt.which;
+            if(key == 80)
+              print();
+          });
+        })
     });	
 	</script>
 </body>
